@@ -7,15 +7,15 @@ body{
 }
 
 #image-track > .image{
-    width: 20vmin;
-    height: 30vmin;
+    width: 40vmin;
+    height: 56vmin;
     object-fit: cover;
     object-position: 100% 50%;
 }
 
 #image-track > a > .image{
-    width: 20vmin;
-    height: 30vmin;
+    width: 40vmin;
+    height: 56vmin;
     object-fit: cover;
     object-position: 100% 50%;
 }
