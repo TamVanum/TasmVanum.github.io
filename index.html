@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <!--Import Google Icon Font-->
+        
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+
+    <body>
+
+
+        <div class="row" id="container">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input type="text" id="nombre" required>
+                        <label for="icon_prefix">Nombre completo</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">art_track</i>
+                        <input type="text" class="validate" id="rut" required>
+                        <label for="icon_telephone">Rut</label>
+                    </div>
+
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">cake</i>
+                        <input type="text" class="datepicker" id="nacimiento" required>
+                        <label for="icon_telephone">Fecha de nacimiento</label>
+                    </div>
+                    
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">home</i>
+                        <input type="text" class="validate" id="domicilio" required>
+                        <label for="icon_telephone">Domicilio</label>
+                    </div>
+                    
+                    <div class="input-field col s4">
+                        <select id="afp" required>
+                            <option value="" disabled selected>AFP afiliada</option>
+                            <option value="0.144">AFP Capital</option>
+                            <option value="0.144">AFP Cuprum</option>
+                            <option value="0.127">AFP Habitat</option>
+                            <option value="0.058">AFP Modelo</option>
+                            <option value="0.116">AFP Planvital</option>
+                            <option value="0.145">AFP Provida</option>
+                            <option value="0.069">AFP Uno</option>
+                        </select>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">access_time</i>
+                        <input type="text" class="validate" id="horas" required>
+                        <label for="icon_telephone">Horas semanales</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">monetization_on</i>
+                        <input type="text" class="validate" id="pago" required>
+                        <label for="icon_telephone">Pago por hora</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">business_center</i>
+                        <input type="text" class="validate" id="cargo" required>
+                        <label for="icon_telephone">Cargo</label>
+                    </div>
+
+                    <div class="file-field input-field col s6">
+                        <div class="btn">
+                            <span>foto</span>
+                            <input type="file" onchange="makeImage(this)" required>
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
+                </div>
+
+            
+                <a href="javascript:genPDF()" class="waves-effect waves-light btn-large" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                </a>
+        
+            
+        </div>
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var date = document.querySelectorAll('.datepicker');
+                var instances = M.Datepicker.init(date);
+            });
+
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var elems = document.querySelectorAll('select');
+                var instances = M.FormSelect.init(elems);
+            });
+
+        </script>
+        
+
+        <script>
+            var imgData = '';
+            function makeImage(image){
+                var img = image.files[0]
+
+                var file = new FileReader()
+
+                file.onloadend = function(){
+                    imgData = file.result
+                    console.log(file.result)
+                }
+                file.readAsDataURL(img)
+            }
+        </script>
+
+
+        <script type="text/javascript" src="jspdf.min.js"></script>
+        <script type="text/javascript">
+        function genPDF(){
+            const fechaActual = new Date().toLocaleDateString();
+
+            var doc=new jsPDF();
+            let nombre=document.getElementById('nombre').value;
+            let rut=document.getElementById('rut').value;
+            let afp=document.getElementById('afp').value;
+            let nacimiento=document.getElementById('nacimiento').value;
+            let pago=document.getElementById('pago').value;
+            let domicilio=document.getElementById('domicilio').value;
+            let horas=document.getElementById('horas').value;
+            let cargo=document.getElementById('cargo').value;
+            let bruto = (parseInt(pago) * (parseInt(horas)*4));
+            let liquido = parseFloat(bruto)-(parseFloat(bruto)*parseFloat(afp))
+
+            doc.text(20,20, "En Rancagua, a "+fechaActual+", entre EmpresaX, con domicilio en Rancagua \ncalle 5 numero 4, en adelante denominado 'El empleador', \ny "+nombre+", nacido el "+nacimiento+", rut: "+rut+" \ncon domicilio en "+domicilio+", en adelante denominado \n'El trabajador', se acuerda lo siguiente:");
+            doc.text(20,60, "OBJETO DEL CONTRATO: El objeto del presente contrato es la \ncontratación del servicio del Trabajador para prestar servicios \ncomo "+cargo+".");
+            doc.text(20, 80, "HORARIO: El horario de trabajo será de "+horas+" horas semanales.")
+            doc.text(20,100,"REMUNERACIÓN: La remuneración del Trabajador será de "+pago+"clp \npor hora correspondiente a un sueldo bruto de "+bruto+", \nsujeto a las deducciones y retenciones legales correspondientes. \nEl pago que se realizará sera de "+liquido+".");
+            doc.addPage()
+            doc.addImage(imgData, 15,20)
+            doc.save('Test.pdf');
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    </body>
+</html>
